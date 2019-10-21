@@ -46,7 +46,9 @@ steps:
           gcloud beta run deploy rshell \
             --image gcr.io/$PROJECT_ID/rshell:latest \
             --allow-unauthenticated \
-            --region=us-central1
+            --region=us-central1 \
+            --platform=managed \
+            --project=sishio
         else
           exit 0
         fi
