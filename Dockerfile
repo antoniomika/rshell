@@ -1,11 +1,12 @@
-FROM golang:1.12.5-alpine as builder
+FROM golang:1.13.2-alpine as builder
 LABEL maintainer="Antonio Mika <me@antoniomika.me>"
 
-RUN apk add --no-cache git gcc musl-dev
-
 ENV GOCACHE /gocache
+ENV CGO_ENABLED 0
 
-WORKDIR /usr/local/go/src/github.com/antoniomika/rshell
+WORKDIR /app
+
+RUN apk add --no-cache git
 
 COPY go.mod .
 COPY go.sum .
@@ -17,12 +18,10 @@ COPY . .
 RUN go install
 RUN go test -i ./...
 
-FROM alpine
+FROM scratch
 LABEL maintainer="Antonio Mika <me@antoniomika.me>"
 
-COPY --from=builder /usr/local/go/src/github.com/antoniomika/rshell /rshell
-COPY --from=builder /go/bin/rshell /rshell/rshell
+WORKDIR /app
+COPY --from=builder /go/bin/rshell /app/rshell
 
-WORKDIR /rshell
-
-ENTRYPOINT ["/rshell/rshell"]
+ENTRYPOINT ["/app/rshell"]
