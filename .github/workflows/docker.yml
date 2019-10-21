@@ -29,4 +29,4 @@ jobs:
       if: github.ref == 'refs/heads/master'
       run: |
         echo -n "${CLOUD_RUN_SA_KEY}" | base64 -d > key.json
-        docker run -v $(pwd)/key.json:/key.json gcr.io/cloud-builders/gcloud bash -c 'gcloud components install beta && gcloud auth activate-service-account --key-file=/key.json && gcloud beta run deploy rshell --platform managed --image $GITHUB_REPOSITORY:latest --allow-unauthenticated --region=us-central1'
+        docker run -v $(pwd)/key.json:/key.json google/cloud-sdk:267.0.0 bash -c 'gcloud auth activate-service-account --key-file=/key.json && gcloud beta run deploy rshell --platform managed --image $GITHUB_REPOSITORY:latest --allow-unauthenticated --region=us-central1'
