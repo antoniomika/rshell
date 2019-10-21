@@ -24,15 +24,12 @@ jobs:
       if: github.ref == 'refs/heads/master'
       run: docker buildx build --push --platform linux/arm/v7,linux/arm64,linux/amd64 -t $GITHUB_REPOSITORY:latest .
     - name: Deploy to Cloud Run
+      uses: docker://google/cloud-sdk:267.0.0
+      shell: bash
       env:
         CLOUD_RUN_SA_KEY: ${{ secrets.CLOUD_RUN_SA }}
       if: github.ref == 'refs/heads/master'
-      uses: docker://google/cloud-sdk:267.0.0
       run: |
         echo -n "${CLOUD_RUN_SA_KEY}" | base64 -d > key.json
         gcloud auth activate-service-account --key-file=./key.json
-        gcloud beta run deploy rshell \
-          --image $GITHUB_REPOSITORY:latest \
-          --allow-unauthenticated \
-          --region=us-central1
-      shell: bash
+        gcloud beta run deploy rshell --image $GITHUB_REPOSITORY:latest --allow-unauthenticated --region=us-central1
