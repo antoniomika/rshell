@@ -48,7 +48,7 @@ steps:
             --allow-unauthenticated \
             --region=us-central1 \
             --platform=managed \
-            --project=sishio
+            --project=$PROJECT_ID
         else
           exit 0
         fi
